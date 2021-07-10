@@ -16,11 +16,14 @@ logger.addHandler(handler)
 # load enviromental variables from .env file
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-admin_user_id = os.getenv('ADMIN_USER_ID')
-mute_role_id = os.getenv('MUTE_ROLE_ID')
-logging_server_id = os.getenv('LOGGING_SERVER_ID')
-dm_logging_channel_id = os.getenv('DM_LOGGING_CHANNEL_ID')
-dm_auto_response = os.getenv('DM_AUTO_RESPONSE')
+
+# the id need to be ints
+admin_user_id = int(os.getenv('ADMIN_USER_ID'))
+mute_role_id = int(os.getenv('MUTE_ROLE_ID'))
+logging_server_id = int(os.getenv('LOGGING_SERVER_ID'))
+dm_logging_channel_id = int(os.getenv('DM_LOGGING_CHANNEL_ID'))
+
+dm_auto_response = str(os.getenv('DM_AUTO_RESPONSE'))
 
 #set up the client
 intents = discord.Intents.default()
