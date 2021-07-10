@@ -143,26 +143,6 @@ async def list_users(ctx):
         await send_dm(f'{pair}  {bad_json.get(pair)}')
 
 
-#TODO: this function is not working rn but will be used to update the bot's pfp
-#@client.command(name='update_pfp', help='utility command')
-#@commands.dm_only()
-#@commands.check(check_user_id)
-#async def update_pfp(ctx):
-
-    #with open('bot.png', 'rb') as image:
-        #pfp = image.read()
-
-    #await client.user.edit(avatar=pfp)
-    #print('pfp changed')
-
-@client.command(name='update_username', help='updates username to specified string')
-@commands.dm_only()
-@commands.check(check_owner_id)
-async def update_username(ctx, username: str):
-    
-    await client.user.edit(password=None, username=username)
-    print(f'username updated to: {client.user}')
-
 # run statement
 try:
     client.run(TOKEN)
