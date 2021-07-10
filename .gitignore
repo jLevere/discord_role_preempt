@@ -144,3 +144,6 @@ bot.log
 
 # any log files
 *.log
+
+# profile images
+*.png
