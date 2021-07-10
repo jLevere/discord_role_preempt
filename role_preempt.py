@@ -160,6 +160,7 @@ async def list_users(ctx):
 @commands.check(check_owner_id)
 async def update_username(ctx, username: str):
     await client.user.edit(username=username)
+    print(f'username updated to: {client.user}')
 
 # run statement
 try:
