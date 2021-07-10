@@ -19,6 +19,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 # the id need to be ints
 admin_user_id = int(os.getenv('ADMIN_USER_ID'))
+owner_user_id = int(os.getenv('OWNER_USER_ID'))
 mute_role_id = int(os.getenv('MUTE_ROLE_ID'))
 logging_server_id = int(os.getenv('LOGGING_SERVER_ID'))
 dm_logging_channel_id = int(os.getenv('DM_LOGGING_CHANNEL_ID'))
@@ -43,6 +44,9 @@ async def send_dm(msg):
 # part of the dm verification thing
 def check_user_id(ctx):
     return str(ctx.message.author.id) == admin_user_id
+
+def check_owner_id(ctx):
+    return str(ctx.message.author.id) == owner_user_id
 
 @client.event
 async def on_ready():
@@ -151,6 +155,11 @@ async def list_users(ctx):
     #await client.user.edit(avatar=pfp)
     #print('pfp changed')
 
+@client.command(name='update_username', help='updates username to specified string')
+@commands.dm_only()
+@commands.check(check_owner_id)
+async def update_username(ctx, username: str):
+    await client.user.edit(username=username)
 
 # run statement
 try:
