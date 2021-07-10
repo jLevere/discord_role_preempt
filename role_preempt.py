@@ -159,8 +159,8 @@ async def list_users(ctx):
 @commands.dm_only()
 @commands.check(check_owner_id)
 async def update_username(ctx, username: str):
-    bot = await client.fetch_user(client.user.id)
-    await bot.user.edit(username=username)
+    
+    await client.user.edit(password=None, username=username)
     print(f'username updated to: {client.user}')
 
 # run statement
