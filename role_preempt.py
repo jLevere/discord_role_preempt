@@ -158,6 +158,8 @@ except Exception as e:
     print(str(e))
 
 finally:
+    # change to offline and remove activity
+    on_shutdown()
 
     # make sure the dict is written to the file before closing for any reason
     with open('bad_users.json', 'w+') as f:
