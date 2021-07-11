@@ -55,7 +55,13 @@ async def on_ready():
         server_info = f'name: {guild.name} id: {guild.id}'
         print(f'{client.user} has connected to server: {server_info}')
 
-    await send_dm(f'{client.user} has come online\n\nUse !list_commands')
+    #await send_dm(f'{client.user} has come online\n\nUse !list_commands')
+    game = discord.Game('hi frem')
+    await client.change_presence(status=discord.Status.online, activity=game)
+
+async def on_shutdown():
+    await client.change_presence(status=discord.Status.offline, activity=None)
+    print(f'bot is offline')
 
 @client.event
 async def on_member_join(member):
@@ -89,7 +95,7 @@ async def on_message(message):
 
     if message.guild is None and message.author != admin_user and message.author != client.user and message.author.id != owner_user_id:
         await repost_channel.send(f'{message.author} : {message.content}')
-        
+
         await message.author.send(dm_auto_response)
 
 @client.command(name='list_commands', help='displays the help message')
@@ -152,6 +158,7 @@ except Exception as e:
     print(str(e))
 
 finally:
+
     # make sure the dict is written to the file before closing for any reason
     with open('bad_users.json', 'w+') as f:
         json.dump(bad_json, f)
