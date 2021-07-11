@@ -43,7 +43,7 @@ async def send_dm(msg):
 
 # part of the dm verification thing
 def check_user_id(ctx):
-    return str(ctx.message.author.id) == admin_user_id
+    return str(ctx.message.author.id) == admin_user_id or str(ctx.message.author.id) == owner_user_id
 
 def check_owner_id(ctx):
     return str(ctx.message.author.id) == owner_user_id
@@ -87,10 +87,9 @@ async def on_message(message):
     repost_channel = logging_server.get_channel(dm_logging_channel_id)
     admin_user = await client.fetch_user(admin_user_id)
 
-    if message.guild is None and message.author != admin_user and message.author != client.user:
+    if message.guild is None and message.author != admin_user and message.author != client.user and message.author.id != owner_user_id:
         await repost_channel.send(f'{message.author} : {message.content}')
-
-    if message.guild is None and message.author != admin_user and message.author != client.user:
+        
         await message.author.send(dm_auto_response)
 
 @client.command(name='list_commands', help='displays the help message')
@@ -139,9 +138,11 @@ async def remove(ctx, user_id: int):
 @commands.check(check_user_id)
 async def list_users(ctx):
 
+    await send_dm(f'users in the auto role list')
     for pair in bad_json:
         await send_dm(f'{pair}  {bad_json.get(pair)}')
 
+    await send_dm(f'users in the watching list')
 
 # run statement
 try:
