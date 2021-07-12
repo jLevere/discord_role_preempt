@@ -36,8 +36,8 @@ f = open('bad_users.json')
 bad_json = json.load(f)
 
 # utility functions
-async def send_dm(msg):
-    receiver = await client.fetch_user(admin_user_id)
+async def send_dm(user_id, msg):
+    receiver = await client.fetch_user(user_id)
     await receiver.create_dm()
     await receiver.dm_channel.send(msg)
 
@@ -55,13 +55,9 @@ async def on_ready():
         server_info = f'name: {guild.name} id: {guild.id}'
         print(f'{client.user} has connected to server: {server_info}')
 
-    #await send_dm(f'{client.user} has come online\n\nUse !list_commands')
+    await send_dm(owner_user_id, f'{client.user} has come online\n\nUse !list_commands')
     game = discord.Game('hi frem')
     await client.change_presence(status=discord.Status.online, activity=game)
-
-async def on_shutdown():
-    await client.change_presence(status=discord.Status.offline, activity=None)
-    print(f'bot is offline')
 
 @client.event
 async def on_member_join(member):
@@ -109,7 +105,7 @@ async def list_commands(ctx):
     command_list.append('list_users: list all the entries currently watched for. example !list_users \n')
     command_list.append('```')
 
-    await send_dm('\n'.join(command_list))
+    await send_dm(ctx.message.author.id, '\n'.join(command_list))
 
 
 
@@ -120,7 +116,7 @@ async def add(ctx, user_id: int, user_name: str):
 
     bad_json[user_id] = user_name
     
-    await send_dm(f'{user_name} was added')
+    await send_dm(ctx.message.author.id, f'{user_name} was added')
 
 
 
@@ -134,9 +130,9 @@ async def remove(ctx, user_id: int):
     if user_id in bad_json:
         user_name = bad_json.get(user_id)
         del bad_json[user_id]
-        await send_dm(f'removed {user_id} {user_name} from list')
+        await send_dm(ctx.message.author.id, f'removed {user_id} {user_name} from list')
     else:
-        await send_dm('the user_id entered did not match anyting in the list')
+        await send_dm(ctx.message.author.id, 'the user_id entered did not match anyting in the list')
 
 
 @client.command(name='list_users', help='ex: !list_users')
@@ -144,11 +140,19 @@ async def remove(ctx, user_id: int):
 @commands.check(check_user_id)
 async def list_users(ctx):
 
-    await send_dm(f'users in the auto role list')
+    await send_dm(ctx.message.author.id, f'users in the auto role list')
     for pair in bad_json:
-        await send_dm(f'{pair}  {bad_json.get(pair)}')
+        await send_dm(ctx.message.author.id, f'{pair}  {bad_json.get(pair)}')
 
-    await send_dm(f'users in the watching list')
+    await send_dm(ctx.message.author.id, f'users in the watching list')
+
+@client.command(name='shutdown', help='disconect bot from discord')
+@commands.dm_only()
+@commands.check(check_user_id)
+async def shutdown(ctx):
+    await client.change_presence(activity=None, status=discord.Status.online)
+    await client.close()
+
 
 # run statement
 try:
@@ -158,9 +162,6 @@ except Exception as e:
     print(str(e))
 
 finally:
-    # change to offline and remove activity
-    on_shutdown()
-
     # make sure the dict is written to the file before closing for any reason
     with open('bad_users.json', 'w+') as f:
         json.dump(bad_json, f)
