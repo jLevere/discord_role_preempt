@@ -10,7 +10,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 owner_user_id = os.getenv('OWNER_USER_ID')
 
 
-intents = discord.Intents.members
+intents = discord.Intents.default()
+intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
 
