@@ -19,7 +19,7 @@ def check_user_id(ctx):
 
 @client.event
 async def on_ready():
-
+    print('online')
     await client.change_presence(status=discord.Status.online, activity=None)
 
 
