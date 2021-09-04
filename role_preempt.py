@@ -93,6 +93,8 @@ async def on_message(message):
         await repost_channel.send(f'{message.author} : {message.content}')
 
         await message.author.send(dm_auto_response)
+    
+    await client.process_commands(message)
 
 @client.command(name='list_commands', help='displays the help message')
 @commands.dm_only()
